@@ -5,12 +5,12 @@ import { getFirestore } from "https://www.gstatic.com/firebasejs/12.5.0/firebase
 import { getStorage } from "https://www.gstatic.com/firebasejs/12.5.0/firebase-storage.js";
 
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
+  apiKey: "AIzaSyDytC6VviCMPN7cyZtGWoyf-G4nsDso-Qw",
+  authDomain: "fresh-fish-siliguri.firebaseapp.com",
   projectId: "fresh-fish-siliguri",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  storageBucket: "fresh-fish-siliguri.firebasestorage.app",
+  messagingSenderId: "83162926459",
+  appId: "1:83162926459:web:f9e472ee5e2b1b06d881de"
 };
 
 const app = initializeApp(firebaseConfig);
