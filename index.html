@@ -1,0 +1,168 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#087f5b">
+  <title>FRESH FISH | Freshness Delivered</title>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Arial,sans-serif;background:#f5f8f6;color:#172b24}
+    header{background:#087f5b;color:white;padding:17px 5%;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:5}
+    .logo{font-size:25px;font-weight:bold}
+    header button,.btn{border:0;border-radius:8px;padding:11px 16px;background:#ffca28;color:#172b24;font-weight:bold;cursor:pointer}
+    .hero{padding:55px 6%;background:linear-gradient(120deg,#063f35,#0b9569);color:white}
+    .hero h1{font-size:38px;margin:0 0 12px}
+    .hero p{font-size:17px;line-height:1.6}
+    .hero .btn{display:inline-block;text-decoration:none;margin-top:10px}
+    main{padding:25px 5%;max-width:1250px;margin:auto}
+    .categories{display:flex;gap:10px;overflow:auto;padding:12px 0}
+    .category{border:1px solid #d5e3dc;border-radius:22px;padding:10px 18px;background:white;white-space:nowrap;cursor:pointer}
+    .category.active{background:#087f5b;color:white}
+    .tools{display:flex;gap:10px;margin:15px 0;flex-wrap:wrap}
+    input,select{padding:12px;border:1px solid #ccd9d2;border-radius:8px;font-size:15px}
+    #search{flex:1;min-width:180px}
+    .products{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:18px}
+    .product{background:white;border-radius:13px;overflow:hidden;box-shadow:0 3px 12px #0000000c}
+    .product img{width:100%;height:155px;object-fit:cover;background:#e9f1ed}
+    .product-info{padding:14px}
+    .product h3{margin:0 0 8px}
+    .price{font-weight:bold;color:#087f5b;font-size:19px}
+    .product button{width:100%;margin-top:12px;background:#087f5b;color:white;border:0;padding:11px;border-radius:7px;cursor:pointer}
+    .cart{background:white;padding:20px;border-radius:12px;margin-top:30px}
+    .cart-row{display:flex;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid #eee}
+    .checkout{display:grid;gap:10px;max-width:480px;margin-top:15px}
+    .checkout button{background:#087f5b;color:white;padding:13px;border:0;border-radius:8px;font-weight:bold;cursor:pointer}
+    footer{text-align:center;background:#073e34;color:white;padding:25px;margin-top:35px}
+    @media(max-width:600px){.hero h1{font-size:29px}header{padding:14px 4%}.logo{font-size:21px}}
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">🐟 FRESH FISH</div>
+  <button onclick="document.getElementById('cart').scrollIntoView()">🛒 Cart (<span id="count">0</span>)</button>
+</header>
+
+<section class="hero">
+  <h1>Freshness Delivered to Your Doorstep</h1>
+  <p>Fresh Fish, Chicken, Mutton, Eggs & Grocery.<br>
+  Quality products delivered across Siliguri.</p>
+  <a href="#shop" class="btn">SHOP NOW →</a>
+</section>
+
+<main id="shop">
+  <h2>Shop by Category</h2>
+  <div class="categories" id="categories"></div>
+
+  <div class="tools">
+    <input id="search" placeholder="Search products..." oninput="renderProducts()">
+    <select id="sort" onchange="renderProducts()">
+      <option value="default">Sort: Recommended</option>
+      <option value="low">Price: Low to High</option>
+      <option value="high">Price: High to Low</option>
+    </select>
+  </div>
+
+  <h2>Our Products</h2>
+  <div class="products" id="products"></div>
+
+  <section class="cart" id="cart">
+    <h2>🛒 Your Shopping Cart</h2>
+    <div id="cartItems">Your cart is empty.</div>
+    <h3>Total: ₹<span id="total">0</span></h3>
+
+    <div class="checkout">
+      <input id="customerName" placeholder="Your Full Name">
+      <input id="phone" type="tel" placeholder="Mobile Number">
+      <input id="address" placeholder="Delivery Address">
+      <select id="payment">
+        <option value="COD">Cash on Delivery</option>
+        <option value="UPI">UPI (Payment verification required)</option>
+      </select>
+      <button onclick="placeDemoOrder()">PLACE ORDER</button>
+      <small id="orderMessage">Order submission will be connected to Firebase in the next steps.</small>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <h3>FRESH FISH – SILIGURI</h3>
+  <p>Freshness • Quality • Trust</p>
+  <p>Contact: 7047382737</p>
+  <p>© 2026 FRESH FISH. All Rights Reserved.</p>
+</footer>
+
+<script>
+const categories=["All","Fish","Chicken","Mutton","Eggs","Grocery"];
+let activeCategory="All";
+let cart={};
+
+const products=[
+ {id:1,name:"Rohu Fish",category:"Fish",price:240,unit:"kg",image:"https://images.unsplash.com/photo-1510130387422-82bed34b37e9?w=500"},
+ {id:2,name:"Katla Fish",category:"Fish",price:280,unit:"kg",image:"https://images.unsplash.com/photo-1510130387422-82bed34b37e9?w=500"},
+ {id:3,name:"Fresh Chicken",category:"Chicken",price:220,unit:"kg",image:"https://images.unsplash.com/photo-1587593810167-a84920ea0781?w=500"},
+ {id:4,name:"Mutton",category:"Mutton",price:850,unit:"kg",image:"https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?w=500"},
+ {id:5,name:"Farm Eggs",category:"Eggs",price:90,unit:"12 pcs",image:"https://images.unsplash.com/photo-1518569656558-1f25e69d93d7?w=500"}
+];
+
+function renderCategories(){
+ document.getElementById("categories").innerHTML=categories.map(c=>
+ `<button class="category ${activeCategory===c?'active':''}" onclick="activeCategory='${c}';renderCategories();renderProducts()">${c}</button>`
+ ).join("");
+}
+
+function renderProducts(){
+ let q=document.getElementById("search").value.toLowerCase();
+ let list=products.filter(p=>(activeCategory==="All"||p.category===activeCategory)&&p.name.toLowerCase().includes(q));
+ let sort=document.getElementById("sort").value;
+ if(sort==="low")list.sort((a,b)=>a.price-b.price);
+ if(sort==="high")list.sort((a,b)=>b.price-a.price);
+ document.getElementById("products").innerHTML=list.map(p=>`
+ <article class="product">
+ <img src="${p.image}" alt="${p.name}" loading="lazy">
+ <div class="product-info">
+ <h3>${p.name}</h3>
+ <div class="price">₹${p.price} / ${p.unit}</div>
+ <button onclick="addToCart(${p.id})">ADD TO CART</button>
+ </div></article>`).join("")||"<p>No products found.</p>";
+}
+
+function addToCart(id){
+ cart[id]=(cart[id]||0)+1;
+ renderCart();
+}
+
+function changeQty(id,amount){
+ cart[id]=(cart[id]||0)+amount;
+ if(cart[id]<=0)delete cart[id];
+ renderCart();
+}
+
+function renderCart(){
+ let items=Object.entries(cart);
+ let count=items.reduce((s,[id,q])=>s+q,0);
+ let total=items.reduce((s,[id,q])=>s+products.find(p=>p.id==id).price*q,0);
+ document.getElementById("count").textContent=count;
+ document.getElementById("total").textContent=total;
+ document.getElementById("cartItems").innerHTML=items.length?items.map(([id,q])=>{
+ let p=products.find(x=>x.id==id);
+ return `<div class="cart-row"><span>${p.name} × ${q}</span>
+ <span><button onclick="changeQty(${id},-1)">−</button>
+ ${q} <button onclick="changeQty(${id},1)">+</button></span></div>`;
+ }).join(""):"Your cart is empty.";
+}
+
+function placeDemoOrder(){
+ document.getElementById("orderMessage").textContent=
+ "This is a preview only. Firebase order processing is not connected yet.";
+ alert("Firebase connection is the next step. No order has been submitted.");
+}
+
+renderCategories();
+renderProducts();
+renderCart();
+</script>
+</body>
+</html>
